@@ -1,5 +1,5 @@
+<!-- riwayat.php -->
 <?php
-// riwayat.php
 session_start();
 include '../koneksi.php'; // Sesuaikan path jika lokasi file koneksi.php berbeda
 
@@ -85,15 +85,6 @@ if ($result) {
 </head>
 <body class="bg-green-50 min-h-screen">
 
-    <nav class="bg-white shadow px-6 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold text-green-700">Skotrash</h1>
-        <ul class="flex space-x-6 text-sm font-medium text-gray-700">
-            <li><a href="index.php" class="hover:text-green-600">Home</a></li>
-            <li><a href="aboutus.php" class="hover:text-green-600">About Us</a></li>
-            <li><a href="profile.php" class="hover:text-green-600">Profile</a></li>
-        </ul>
-    </nav>
-
     <div class="container mx-auto p-6">
         <h2 class="text-3xl font-bold text-gray-800 mb-6">Riwayat Penyetoran Sampah</h2>
 
@@ -137,5 +128,34 @@ if ($result) {
             </div>
         <?php endif; ?>
     </div>
+      <!-- Navigasi Bawah -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-inner z-50">
+    <div class="flex justify-around text-sm text-gray-500">
+      <a href="index.php" class="flex flex-col items-center p-2 hover:text-green-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6m0 0l2 2m-2-2l-7 7-7-7" />
+        </svg>
+        Beranda
+      </a>
+      <a href="topup.php" class="flex flex-col items-center p-2 hover:text-green-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Setor
+      </a>
+      <a href="riwayat.php" class="flex flex-col items-center p-2 text-green-600 font-semibold">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v10M16 7v10" />
+        </svg>
+        Riwayat
+      </a>
+      <a href="profile.php" class="flex flex-col items-center p-2 hover:text-green-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A12.073 12.073 0 0112 15c2.762 0 5.304.938 7.121 2.804M15 11a3 3 0 10-6 0 3 3 0 006 0z" />
+        </svg>
+        Profil
+      </a>
+    </div>
+  </nav>
 </body>
 </html>
