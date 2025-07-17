@@ -116,6 +116,26 @@ $percentage_change = 0;
 if ($total_last_week > 0) {
   $percentage_change = (($total_mingguan - $total_last_week) / $total_last_week) * 100;
 }
+
+$rankings_query = "
+  SELECT 
+    u.nama, 
+    u.kelas, 
+    SUM(dp.subtotal_poin) AS total_poin 
+  FROM users u
+  LEFT JOIN penyetoran p ON p.user_id = u.id AND p.status = 'approved'
+  LEFT JOIN detail_penyetoran dp ON dp.penyetoran_id = p.id
+  GROUP BY u.id
+  ORDER BY total_poin DESC
+  LIMIT 3
+";
+
+$rankings_result = mysqli_query($conn, $rankings_query);
+$rankings = [];
+while ($row = mysqli_fetch_assoc($rankings_result)) {
+    $rankings[] = $row;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -499,55 +519,51 @@ if ($total_last_week > 0) {
 
   <!-- Leaderboard -->
   <div class="bg-white rounded-2xl shadow-lg p-6 mb-32">
-    <h2 class="text-lg font-bold text-gray-800 mb-6 flex items-center">
-      <span class="text-2xl mr-2">🏆</span>
-      Peringkat Tertinggi
-    </h2>
+  <h2 class="text-lg font-bold text-gray-800 mb-6 flex items-center">
+    <span class="text-2xl mr-2">🏆</span>
+    Peringkat Seluruh User
+  </h2>
 
-    <div class="space-y-4">
-      <?php if (count($rankings) > 0): ?>
-        <?php foreach ($rankings as $index => $ranking): ?>
-          <div class="flex items-center justify-between p-4 <?= 
-            $index == 0 ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200' : 
-            ($index == 1 ? 'bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200' : 
-            'bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200') 
-          ?> rounded-xl">
-            <div class="flex items-center space-x-4">
-              <div class="text-3xl"><?= 
-                $index == 0 ? '🥇' : 
-                ($index == 1 ? '🥈' : '🥉')
-              ?></div>
-              <div class="w-12 h-12 <?= 
-                $index == 0 ? 'bg-yellow-200' : 
-                ($index == 1 ? 'bg-gray-200' : 'bg-orange-200') 
-              ?> rounded-full flex items-center justify-center">
-                <span class="<?= 
-                  $index == 0 ? 'text-yellow-800' : 
-                  ($index == 1 ? 'text-gray-800' : 'text-orange-800') 
-                ?> font-bold">
-                  <?= substr($ranking['nama'], 0, 2) ?>
-                </span>
-              </div>
-              <div>
-                <div class="text-base font-semibold text-gray-800"><?= htmlspecialchars($ranking['nama']) ?></div>
-                <div class="text-sm text-gray-500">Kelas <?= htmlspecialchars($ranking['kelas']) ?></div>
-              </div>
+  <div class="space-y-4">
+    <?php if (count($rankings) > 0): ?>
+      <?php foreach ($rankings as $index => $r): ?>
+        <div class="flex items-center justify-between p-4 <?= 
+          $index == 0 ? 'bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200' : 
+          ($index == 1 ? 'bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200' : 
+          'bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200') 
+        ?> rounded-xl">
+          <div class="flex items-center space-x-4">
+            <div class="text-3xl"><?= ['🥇','🥈','🥉'][$index] ?? ($index+1) ?></div>
+            <div class="w-12 h-12 <?= 
+              $index == 0 ? 'bg-yellow-200' : 
+              ($index == 1 ? 'bg-gray-200' : 'bg-orange-200') 
+            ?> rounded-full flex items-center justify-center">
+              <span class="<?= 
+                $index == 0 ? 'text-yellow-800' : 
+                ($index == 1 ? 'text-gray-800' : 'text-orange-800') 
+              ?> font-bold">
+                <?= strtoupper(substr($r['nama'], 0, 2)) ?>
+              </span>
             </div>
-            <div class="text-right">
-              <div class="text-xl font-bold <?= 
-                $index == 0 ? 'text-yellow-600' : 
-                ($index == 1 ? 'text-gray-600' : 'text-orange-600') 
-              ?>"><?= number_format($ranking['total_poin']) ?></div>
-              <div class="text-sm text-gray-500">poin</div>
+            <div>
+              <div class="text-base font-semibold text-gray-800"><?= htmlspecialchars($r['nama']) ?></div>
+              <div class="text-sm text-gray-500">Kelas <?= htmlspecialchars($r['kelas']) ?></div>
             </div>
           </div>
-        <?php endforeach; ?>
-      <?php else: ?>
-        <div class="text-center py-8">
-          <p class="text-gray-500">Belum ada data peringkat</p>
+          <div class="text-right">
+            <div class="text-xl font-bold <?= 
+              $index == 0 ? 'text-yellow-600' : 
+              ($index == 1 ? 'text-gray-600' : 'text-orange-600') 
+            ?>"><?= number_format($r['total_poin'] ?? 0) ?></div>
+            <div class="text-sm text-gray-500">poin</div>
+          </div>
         </div>
-      <?php endif; ?>
-    </div>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <div class="text-center py-8">
+        <p class="text-gray-500">Belum ada data peringkat</p>
+      </div>
+    <?php endif; ?>
   </div>
 </div>
 
